@@ -1,0 +1,20 @@
+Tesla Model S
+Wit
+5
+75000
+MiddelburgGoes
+Tesla Model X
+Rood
+5
+90000
+TerneuzenGoes
+Tesla Model 3
+Blauw
+5
+40000
+MiddelburgTerneuzen
+Tesla Model Y
+Zwart
+5
+60000
+TerneuzenGoes
