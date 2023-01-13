@@ -35,7 +35,6 @@
             this.SelectedCarDoorsLabel = new System.Windows.Forms.Label();
             this.SelectedCarColorLabel = new System.Windows.Forms.Label();
             this.SelectedCarLabel = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -64,7 +63,6 @@
             this.Preset_Label = new System.Windows.Forms.Label();
             this.Save_Button = new System.Windows.Forms.Button();
             this.Delete_Button = new System.Windows.Forms.Button();
-            this.Update_Button = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
             this.AddLocationButton = new System.Windows.Forms.Button();
             this.DeleteLocationButton = new System.Windows.Forms.Button();
@@ -72,7 +70,10 @@
             this.ExistingLocationsBox = new System.Windows.Forms.ComboBox();
             this.label13 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
-            this.DebugLabel = new System.Windows.Forms.Label();
+            this.ResetButton = new System.Windows.Forms.Button();
+            this.RestartButton = new System.Windows.Forms.Button();
+            this.label14 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CarPictureBox)).BeginInit();
             this.panel2.SuspendLayout();
@@ -88,7 +89,6 @@
             this.panel1.Controls.Add(this.SelectedCarDoorsLabel);
             this.panel1.Controls.Add(this.SelectedCarColorLabel);
             this.panel1.Controls.Add(this.SelectedCarLabel);
-            this.panel1.Controls.Add(this.label7);
             this.panel1.Controls.Add(this.label6);
             this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.label4);
@@ -148,16 +148,6 @@
             this.SelectedCarLabel.Size = new System.Drawing.Size(17, 15);
             this.SelectedCarLabel.TabIndex = 9;
             this.SelectedCarLabel.Text = "--";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label7.Location = new System.Drawing.Point(12, 182);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(94, 15);
-            this.label7.TabIndex = 8;
-            this.label7.Text = "Gem vraagprijs:";
             // 
             // label6
             // 
@@ -259,7 +249,6 @@
             this.panel2.Controls.Add(this.Preset_Label);
             this.panel2.Controls.Add(this.Save_Button);
             this.panel2.Controls.Add(this.Delete_Button);
-            this.panel2.Controls.Add(this.Update_Button);
             this.panel2.Location = new System.Drawing.Point(12, 271);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(777, 350);
@@ -422,30 +411,23 @@
             // 
             // Save_Button
             // 
-            this.Save_Button.Location = new System.Drawing.Point(255, 324);
+            this.Save_Button.Location = new System.Drawing.Point(191, 324);
             this.Save_Button.Name = "Save_Button";
-            this.Save_Button.Size = new System.Drawing.Size(117, 23);
+            this.Save_Button.Size = new System.Drawing.Size(181, 23);
             this.Save_Button.TabIndex = 2;
-            this.Save_Button.Text = "Save";
+            this.Save_Button.Text = "Add New";
             this.Save_Button.UseVisualStyleBackColor = true;
+            this.Save_Button.Click += new System.EventHandler(this.Save_Button_Click);
             // 
             // Delete_Button
             // 
-            this.Delete_Button.Location = new System.Drawing.Point(133, 324);
+            this.Delete_Button.Location = new System.Drawing.Point(3, 324);
             this.Delete_Button.Name = "Delete_Button";
-            this.Delete_Button.Size = new System.Drawing.Size(116, 23);
+            this.Delete_Button.Size = new System.Drawing.Size(182, 23);
             this.Delete_Button.TabIndex = 1;
             this.Delete_Button.Text = "Delete";
             this.Delete_Button.UseVisualStyleBackColor = true;
-            // 
-            // Update_Button
-            // 
-            this.Update_Button.Location = new System.Drawing.Point(3, 324);
-            this.Update_Button.Name = "Update_Button";
-            this.Update_Button.Size = new System.Drawing.Size(124, 23);
-            this.Update_Button.TabIndex = 0;
-            this.Update_Button.Text = "Update";
-            this.Update_Button.UseVisualStyleBackColor = true;
+            this.Delete_Button.Click += new System.EventHandler(this.Delete_Button_Click);
             // 
             // panel3
             // 
@@ -516,24 +498,58 @@
             this.label12.TabIndex = 0;
             this.label12.Text = "Bestaande locaties:";
             // 
-            // DebugLabel
+            // ResetButton
             // 
-            this.DebugLabel.AutoSize = true;
-            this.DebugLabel.Font = new System.Drawing.Font("Segoe UI", 24F, ((System.Drawing.FontStyle)(((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic) 
-                | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point);
-            this.DebugLabel.ForeColor = System.Drawing.Color.Red;
-            this.DebugLabel.Location = new System.Drawing.Point(849, 345);
-            this.DebugLabel.Name = "DebugLabel";
-            this.DebugLabel.Size = new System.Drawing.Size(208, 45);
-            this.DebugLabel.TabIndex = 3;
-            this.DebugLabel.Text = "Debug Label";
+            this.ResetButton.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.ResetButton.Location = new System.Drawing.Point(795, 271);
+            this.ResetButton.Name = "ResetButton";
+            this.ResetButton.Size = new System.Drawing.Size(424, 70);
+            this.ResetButton.TabIndex = 4;
+            this.ResetButton.Text = "CLEAR DATABASE";
+            this.ResetButton.UseVisualStyleBackColor = true;
+            this.ResetButton.Click += new System.EventHandler(this.ResetButton_Click);
+            // 
+            // RestartButton
+            // 
+            this.RestartButton.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.RestartButton.Location = new System.Drawing.Point(795, 547);
+            this.RestartButton.Name = "RestartButton";
+            this.RestartButton.Size = new System.Drawing.Size(424, 70);
+            this.RestartButton.TabIndex = 5;
+            this.RestartButton.Text = "RESTART APPLICATION";
+            this.RestartButton.UseVisualStyleBackColor = true;
+            this.RestartButton.Click += new System.EventHandler(this.RestartButton_Click);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label14.Location = new System.Drawing.Point(795, 519);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(401, 25);
+            this.label14.TabIndex = 6;
+            this.label14.Text = "Unhandled Exception? Press continue and restart!";
+            // 
+            // button1
+            // 
+            this.button1.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.button1.Location = new System.Drawing.Point(795, 347);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(424, 75);
+            this.button1.TabIndex = 7;
+            this.button1.Text = "RESET DATABASE TO DEFAULT";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1231, 633);
-            this.Controls.Add(this.DebugLabel);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.label14);
+            this.Controls.Add(this.RestartButton);
+            this.Controls.Add(this.ResetButton);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
@@ -556,7 +572,6 @@
 
         private Panel panel1;
         private Label label1;
-        private Label label7;
         private Label label6;
         private Label label5;
         private Label label4;
@@ -572,7 +587,6 @@
         private Label Preset_Label;
         private Button Save_Button;
         private Button Delete_Button;
-        private Button Update_Button;
         private ComboBox carPreset_box;
         private Label label11;
         private Label label10;
@@ -597,6 +611,9 @@
         private ComboBox ExistingLocationsBox;
         private Label label13;
         private Label label12;
-        private Label DebugLabel;
+        private Button ResetButton;
+        private Button RestartButton;
+        private Label label14;
+        private Button button1;
     }
 }

@@ -1,9 +1,4 @@
-using Microsoft.VisualBasic.ApplicationServices;
-using System.IO;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using static System.Windows.Forms.LinkLabel;
 
 namespace Autogarage_Database
 //public string LocationPath = @"C:\Users\eikel\source\repos\Autogarage-Database\Autogarage-Database\data\locations.txt";
@@ -22,7 +17,8 @@ namespace Autogarage_Database
             CarSelector.SelectedText = "--SELECT--";
             ExistingLocationsBox.SelectedText = "--SELECT--";
             InitLocList();
-            foreach (string location in locations.loc)
+
+            foreach (string location in locations.loc) // adds existing locations in locations.txt to list
             {
                 if (string.IsNullOrEmpty(location)) continue;
                 else
@@ -35,9 +31,9 @@ namespace Autogarage_Database
 
 
             List<Cars> editCars = new List<Cars>();
-            using (StreamReader inputfile = new StreamReader(@"C:\Users\eikel\source\repos\Autogarage-Database\Autogarage-Database\data\cars.txt"))
+            using (StreamReader inputfile = new StreamReader(carPath()))
             {
-                var lineCount = File.ReadLines(@"C:\Users\eikel\source\repos\Autogarage-Database\Autogarage-Database\data\cars.txt").Count();
+                var lineCount = File.ReadLines(carPath()).Count();
 
                 for (int i = 1; i < lineCount + 1; i++)
                 {
@@ -45,39 +41,54 @@ namespace Autogarage_Database
                     {
                         int a = i - 1;
 
-                        string carNameLine = File.ReadLines(@"C:\Users\eikel\source\repos\Autogarage-Database\Autogarage-Database\data\cars.txt").Skip(a - 4).Take(1).First();
-                        string carDoorInt = File.ReadLines(@"C:\Users\eikel\source\repos\Autogarage-Database\Autogarage-Database\data\cars.txt").Skip(a - 2).Take(1).First().ToString();
-                        string carColorVariant = File.ReadLines(@"C:\Users\eikel\source\repos\Autogarage-Database\Autogarage-Database\data\cars.txt").Skip(a - 3).Take(1).First();
-                        string carPriceInt = File.ReadLines(@"C:\Users\eikel\source\repos\Autogarage-Database\Autogarage-Database\data\cars.txt").Skip(a - 1).Take(1).First().ToString();
+                        string carNameLine = File.ReadLines(carPath()).Skip(a - 4).Take(1).First();
+                        string carDoorInt = File.ReadLines(carPath()).Skip(a - 2).Take(1).First().ToString();
+                        string carColorVariant = File.ReadLines(carPath()).Skip(a - 3).Take(1).First();
+                        string carPriceInt = File.ReadLines(carPath()).Skip(a - 1).Take(1).First().ToString();
                         editCars.Add(new Cars() { CarName = carNameLine, CarColor = carColorVariant, CarDoors = carDoorInt, CarPrice = carPriceInt });
 
+                        //populates car list based on selected location
 
-
-                        // check if location matches with selected location ==> When it does ==> Add to list
                     }
-
+                    
                 }
                 carPreset_box.DataSource = editCars;
                 carPreset_box.DisplayMember = "CarName";
             }
         }
-        public class locations
+
+        string locationPath()  // relative location.txt path
+        {
+            string sCurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string sFile = System.IO.Path.Combine(sCurrentDirectory, @"..\..\..\Data\locations.txt");
+            string sFilePath = Path.GetFullPath(sFile);
+            return sFilePath;
+        }
+
+        string carPath() // relative cars.txt path
+        {
+            string sCurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string sFile = System.IO.Path.Combine(sCurrentDirectory, @"..\..\..\Data\cars.txt");
+            string sFilePath = Path.GetFullPath(sFile);
+            return sFilePath;
+        }
+        public class locations  // global list of locations
         {
             public static List<string> loc = new List<string>();
         }
-        public void InitLocList()
+        public void InitLocList() // populates locations combobox
         {
             //Purge white lines
-            File.WriteAllLines(@"C:\Users\eikel\source\repos\Autogarage-Database\Autogarage-Database\data\locations.txt", File.ReadAllLines(@"C:\Users\eikel\source\repos\Autogarage-Database\Autogarage-Database\data\locations.txt").Where(l => !string.IsNullOrWhiteSpace(l)));
+            File.WriteAllLines(locationPath(), File.ReadAllLines(locationPath()).Where(l => !string.IsNullOrWhiteSpace(l)));
 
 
             locations.loc.Clear();
-            using (StreamReader reader = new StreamReader(@"C:\Users\eikel\source\repos\Autogarage-Database\Autogarage-Database\data\locations.txt"))
+            using (StreamReader reader = new StreamReader(locationPath()))
             {
 
                 var line = reader.ReadLine();
 
-                while (line != null)   //While line with text, add that line to list
+                while (line != null)   //While there is line with text, add that line to list
                 {
 
                     locations.loc.Add(line);
@@ -85,11 +96,7 @@ namespace Autogarage_Database
                 }
                 reader.Close();
             }
-            //foreach (string line in File.ReadLines(@"C:\Users\eikel\source\repos\Autogarage-Database\Autogarage-Database\data\locations.txt"))
-            //{
-            //     loc.Add(line);
-            //    counter++;
-            //}
+            
             LocationSelector.DataSource = locations.loc;
             LocationSelector.DisplayMember = "LocationName";
         }
@@ -97,24 +104,24 @@ namespace Autogarage_Database
         private void LocationSelector_SelectedIndexChanged(object sender, EventArgs e)
         {
             List<Cars> cars = new List<Cars>();
-            using (StreamReader inputfile = new StreamReader(@"C:\Users\eikel\source\repos\Autogarage-Database\Autogarage-Database\data\cars.txt"))
+            using (StreamReader inputfile = new StreamReader(carPath()))
             {
-                var lineCount = File.ReadLines(@"C:\Users\eikel\source\repos\Autogarage-Database\Autogarage-Database\data\cars.txt").Count();
+                var lineCount = File.ReadLines(carPath()).Count();
 
                 for (int i = 1; i < lineCount + 1; i++)
                 {
-                    if (i % 5 == 0)
+                    if (i % 5 == 0)  // grabs lines with location data
                     {
                         int a = i - 1;
-                        string locationLine = File.ReadLines(@"C:\Users\eikel\source\repos\Autogarage-Database\Autogarage-Database\data\cars.txt").Skip(a).Take(1).First();
+                        string locationLine = File.ReadLines(carPath()).Skip(a).Take(1).First();
                         //DebugLabel.Text = locationLine; //test line
                         string SelectedLocation = LocationSelector.SelectedItem.ToString();
-                        if (locationLine.Contains(SelectedLocation) == true)
+                        if (locationLine.Contains(SelectedLocation) == true) // reads lines relevant and relative to location data
                         {
-                            string carNameLine = File.ReadLines(@"C:\Users\eikel\source\repos\Autogarage-Database\Autogarage-Database\data\cars.txt").Skip(a - 4).Take(1).First();
-                            string carDoorInt = File.ReadLines(@"C:\Users\eikel\source\repos\Autogarage-Database\Autogarage-Database\data\cars.txt").Skip(a - 2).Take(1).First().ToString();
-                            string carColorVariant = File.ReadLines(@"C:\Users\eikel\source\repos\Autogarage-Database\Autogarage-Database\data\cars.txt").Skip(a - 3).Take(1).First();
-                            string carPriceInt = File.ReadLines(@"C:\Users\eikel\source\repos\Autogarage-Database\Autogarage-Database\data\cars.txt").Skip(a - 1).Take(1).First().ToString();
+                            string carNameLine = File.ReadLines(carPath()).Skip(a - 4).Take(1).First();
+                            string carDoorInt = File.ReadLines(carPath()).Skip(a - 2).Take(1).First().ToString();
+                            string carColorVariant = File.ReadLines(carPath()).Skip(a - 3).Take(1).First();
+                            string carPriceInt = File.ReadLines(carPath()).Skip(a - 1).Take(1).First().ToString();
                             cars.Add(new Cars() { CarName = carNameLine, CarColor = carColorVariant, CarDoors = carDoorInt, CarPrice = carPriceInt });
                         }
 
@@ -125,32 +132,9 @@ namespace Autogarage_Database
                 }
             }
 
-            //if (LocationSelector.Text == "Middelburg")
-            //{
-            //    cars.Add(new Cars() { CarName = "Tesla Model S" , CarColor = "Wit", CarDoors = 5, CarPrice = 75000});
-            //    cars.Add(new Cars() { CarName = "Tesla Model Y", CarColor = "Zwart", CarDoors = 5, CarPrice = 60000});
-            //    cars.Add(new Cars() { CarName = "Tesla Model 3", CarColor = "Blauw", CarDoors = 5, CarPrice = 40000});
-            //    cars.Add(new Cars() { CarName = "Tesla Model X", CarColor = "Rood", CarDoors = 5, CarPrice = 90000});
-
-
-            //}
-            //else if (LocationSelector.Text == "Goes")
-            //{
-            //    cars.Add(new Cars() { CarName = "Tesla Model S", CarColor = "Wit", CarDoors = 5, CarPrice = 80000 });
-            //    cars.Add(new Cars() { CarName = "Tesla Model Y", CarColor = "Zwart", CarDoors = 5, CarPrice = 65000 });
-            //    cars.Add(new Cars() { CarName = "Tesla Model 3", CarColor = "Blauw", CarDoors = 5, CarPrice = 45000 });
-            //    cars.Add(new Cars() { CarName = "Tesla Model X", CarColor = "Rood", CarDoors = 5, CarPrice = 95000 });
-
-            //}
-            //else if (LocationSelector.Text == "Terneuzen")
-            //{
-            //    cars.Add(new Cars() { CarName = "Tesla Model S", CarColor = "Wit", CarDoors = 5, CarPrice = 70000 });
-            //    cars.Add(new Cars() { CarName = "Tesla Model Y", CarColor = "Zwart", CarDoors = 5, CarPrice = 55000 });
-            //    cars.Add(new Cars() { CarName = "Tesla Model 3", CarColor = "Blauw", CarDoors = 5, CarPrice = 35000 });
-            //    cars.Add(new Cars() { CarName = "Tesla Model X", CarColor = "Rood", CarDoors = 5, CarPrice = 85000 });
-            //}
+            
             CarSelector.DataSource = cars;
-            CarSelector.DisplayMember = "CarName";
+            CarSelector.DisplayMember = "CarName"; // Adds cars to combobox
 
         }
 
@@ -158,12 +142,36 @@ namespace Autogarage_Database
         {
             Cars car1 = CarSelector.SelectedItem as Cars;
             SelectedCarLabel.Text = Convert.ToString(car1.CarName);
-            SelectedCarDoorsLabel.Text = Convert.ToString(car1.CarDoors);
+            SelectedCarDoorsLabel.Text = Convert.ToString(car1.CarDoors);  // Populates data labels of selected car
             SelectedCarColorLabel.Text = Convert.ToString(car1.CarColor);
             SelectedCarPriceLabel.Text = Convert.ToString(car1.CarPrice);
             string imageLoader = car1.CarName;
-            string imagePath = "C:\\Users\\eikel\\source\\repos\\Autogarage-Database\\Autogarage-Database\\data\\" + imageLoader + ".jpg";
-            CarPictureBox.Image = Image.FromFile(imagePath);
+            string DefaultCars = car1.CarName;
+            string sCurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string sFile = System.IO.Path.Combine(sCurrentDirectory, @"..\..\..\Data\");
+            string sFilePath = Path.GetFullPath(sFile);
+            string imagePath = sFilePath + imageLoader + ".jpg";
+
+            switch (DefaultCars)
+            {
+                case "Tesla Model S":
+                    CarPictureBox.Image = Image.FromFile(@"..\..\..\data\Tesla Model S.jpg");  // dont look at this pls!
+                    break;
+                case "Tesla Model X":
+                    CarPictureBox.Image = Image.FromFile(@"..\..\..\data\Tesla Model X.jpg");
+                    break;
+                case "Tesla Model 3":
+                    CarPictureBox.Image = Image.FromFile(@"..\..\..\data\Tesla Model 3.jpg");
+                    break;
+                case "Tesla Model Y":
+                    CarPictureBox.Image = Image.FromFile(@"..\..\..\data\Tesla Model Y.jpg");
+                    break;
+                default:
+                    CarPictureBox.Image = null;
+                    break;
+
+            }
+            
 
         }
 
@@ -183,26 +191,33 @@ namespace Autogarage_Database
             open.Filter = "Image Files(*.jpg;) | *.jpg;";
             if (open.ShowDialog() == DialogResult.OK)
             {
-                Text = open.FileName;
-                ModifyPictureBox.Image = new Bitmap(open.FileName);
+                ModifyPictureBox.Image = new Bitmap(open.FileName); //code for uploading and previewing a picture
+
             }
         }
 
         private void ClearButton_Click(object sender, EventArgs e)
         {
-
+            BrandType_UpdateBox.Text = String.Empty;
+            ColorBox.Text = String.Empty;
+            DoorBox.Text = String.Empty;
+            PriceBox.Text = String.Empty;
+            for (int i = 0; i < LocationsBox.Items.Count; i++)  // Clears textboxes and checkboxes if populated
+            {
+                LocationsBox.SetItemChecked(i, false);
+            }
         }
 
         private void AddLocationButton_Click(object sender, EventArgs e)
         {
             string LocationNewText = NewLocationBox.Text.ToString();
-            string locationFile = @"C:\\Users\\eikel\\source\\repos\\Autogarage-Database\\Autogarage-Database\\data\\locations.txt";
-            using (StreamWriter sw = File.AppendText(locationFile))
+
+            using (StreamWriter sw = File.AppendText(locationPath()))
             {
                 sw.WriteLine(LocationNewText);
             }
             locations.loc.Clear();
-            using (StreamReader reader = new StreamReader(@"C:\Users\eikel\source\repos\Autogarage-Database\Autogarage-Database\data\locations.txt"))
+            using (StreamReader reader = new StreamReader(locationPath()))
             {
                 var line = reader.ReadLine();
 
@@ -216,18 +231,14 @@ namespace Autogarage_Database
                     {
 
                         locations.loc.Add(line);
-                        line = reader.ReadLine();
+                        line = reader.ReadLine(); // Add new locations to locations list 
                     }
                     reader.Close();
-                    Application.Restart();
+                    Application.Restart(); // Restart to refresh all comboboxes
                 }
 
             }
-            //foreach (string line in File.ReadLines(@"C:\Users\eikel\source\repos\Autogarage-Database\Autogarage-Database\data\locations.txt"))
-            //{
-            //     loc.Add(line);
-            //    counter++;
-            //}
+
             LocationSelector.DataSource = locations.loc;
             LocationSelector.DisplayMember = "LocationName";
 
@@ -236,27 +247,138 @@ namespace Autogarage_Database
 
         private void DeleteLocationButton_Click(object sender, EventArgs e)
         {
-            var linesMod = File.ReadAllLines(@"C:\Users\eikel\source\repos\Autogarage-Database\Autogarage-Database\data\locations.txt");
+            var linesMod = File.ReadAllLines(locationPath());
             string itemDelete = ExistingLocationsBox.SelectedItem.ToString();
-            var newLines = linesMod.Select(line => Regex.Replace(line, itemDelete, string.Empty, RegexOptions.IgnoreCase));
-            File.WriteAllLines(@"C:\Users\eikel\source\repos\Autogarage-Database\Autogarage-Database\data\locations.txt", newLines);
+            var newLines = linesMod.Select(line => Regex.Replace(line, itemDelete, string.Empty, RegexOptions.IgnoreCase));  // removes line of selected location
+            File.WriteAllLines(locationPath(), newLines);
             Application.Restart();
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selectedCarName = carPreset_box.GetItemText(this.carPreset_box.SelectedItem).ToString();
-            //DebugLabel.Text = selectedCarName;
-            BrandType_UpdateBox.Text = selectedCarName;
+            // Populates textboxes and checklist with information of car (from preset)
+            int counter = 0;
+            foreach (string line in System.IO.File.ReadLines(carPath()))
+            {
+
+                if (line.Contains(selectedCarName) == true)
+                {
+                    //string carDoorInt = File.ReadLines(carPath()).Skip(a - 2).Take(1).First().ToString();
+                    ColorBox.Text = File.ReadLines(carPath()).Skip(counter + 1).Take(1).First();
+                    DoorBox.Text = File.ReadLines(carPath()).Skip(counter + 2).Take(1).First();
+                    PriceBox.Text = File.ReadLines(carPath()).Skip(counter + 3).Take(1).First();
+                    string locationLine = File.ReadLines(carPath()).Skip(counter + 4).Take(1).First(); 
+                    BrandType_UpdateBox.Text = selectedCarName;
+                    int counter1 = 0;
+                    for (int i = 0; i < LocationsBox.Items.Count; i++)
+                    {
+                        LocationsBox.SetItemChecked(i, false);
+                    }
+                    foreach (string location in System.IO.File.ReadLines(locationPath()))
+                    {
+                        if (locationLine.Contains(location) == true)
+                        {
+
+                            LocationsBox.SetItemChecked(counter1, true);
+
+                        }
+                        counter1++;
+                    }
+                    break;
+                }
+                counter++;
+            }
 
             
-            //ColorBox;
-            //DoorBox;
-            //PriceBox;
-            //LocationsBox;
 
         }
+
+        private void Save_Button_Click(object sender, EventArgs e)
+        {
+
+            string newBrand = BrandType_UpdateBox.Text;
+            string newColor = ColorBox.Text;
+            string newDoors = DoorBox.Text;
+            string newPrice = PriceBox.Text;
+            string newCarLocations = "";
+            int checkCounter = 0;
+            for (int i = 0; i < LocationsBox.Items.Count; i++)
+            {
+                if (LocationsBox.GetItemCheckState(checkCounter) == CheckState.Checked)
+                {
+                    newCarLocations = newCarLocations + LocationsBox.Items[checkCounter];  // create string from checked elements
+                    //DebugLabel.Text = newCarLocations;
+                }
+
+                checkCounter++;
+            }
+          
+
+            File.AppendAllText(carPath(), newBrand + Environment.NewLine);
+            File.AppendAllText(carPath(), newColor + Environment.NewLine);
+            File.AppendAllText(carPath(), newDoors + Environment.NewLine);
+            File.AppendAllText(carPath(), newPrice + Environment.NewLine);
+            File.AppendAllText(carPath(), newCarLocations + Environment.NewLine);
+            // append all entered data to end of text file
+            Application.Restart();
+
         }
 
+        private void Delete_Button_Click(object sender, EventArgs e)
+        {
+            int matchedLine;
+            int carLineCount = File.ReadAllLines(carPath()).Length;
+            string newBrand = BrandType_UpdateBox.Text;
+            for (int i = 0; i < carLineCount; i++)
+            {
+                string line = File.ReadLines(carPath()).Skip(i).Take(1).First();
+                if (line == newBrand)           // Searches for string with matching name to entered brand. If found, it deletes the line 5 times so all data is removed
+                {
+                    matchedLine = i;
+                    List<string> carList = File.ReadAllLines(carPath()).ToList();
+                    string firstItem = carList[0];
+                    carList.RemoveAt(matchedLine);
+                    carList.RemoveAt(matchedLine);
+                    carList.RemoveAt(matchedLine);
+                    carList.RemoveAt(matchedLine);
+                    carList.RemoveAt(matchedLine);
+                    File.WriteAllLines(carPath(), carList.ToArray());
+                    Application.Restart();
+                }
+            }
+            Application.Restart();
+        }
+
+        private void ResetButton_Click(object sender, EventArgs e)
+        {
+            StreamWriter car = File.CreateText(carPath());  // Removes everything in database
+            car.Flush();
+            car.Close();
+            StreamWriter loc = File.CreateText(locationPath());
+            loc.Flush();
+            loc.Close();
+            Application.Restart();
+        }
+
+        private void RestartButton_Click(object sender, EventArgs e)
+        {
+            Application.Restart();  // Restart application
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string title = "How to reset database to default";
+            string message = "To reset database copy content from ./data/cars-default.txt to ./data/cars.txt. Do the same with locations.txt";
+            MessageBox.Show(message, title);
+        }
+
+        private void AvgPrice_Click(object sender, EventArgs e)
+        {
+
+        }
     }
+}
+
+
 
